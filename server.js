@@ -40,12 +40,27 @@ function filterByQuery(query, animalsArray) {
   return filteredResults;
 }
 
-app.get('/api/animals', (req, res) => {
-  let results = animals;
-  if (req.query) {
-    results = filterByQuery(req.query, results);
+function findById(id, animalsArray) {
+  const result = animalsArray.filter(animal => animal.id === id)[0];
+  return result;
+}
+
+app.get('/api/animals', (req,res) => {
+    let results = animals;
+    if(req.query){
+        results = filterByQuery(req.query, results);
+    }
+    res.json(results);
+});
+
+app.get('/api/animals/:id', (req, res) => {
+  let results = findById(req.params.id, animals);
+  if(results){
+      res.json(results);
   }
-  res.json(results);
+  else{
+      res.sendStatus(404);
+  }
 });
 
 app.listen(PORT, () => {
